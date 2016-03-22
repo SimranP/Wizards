@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Set;
 
 /* Job Of Bag--
        - throws exception where rules are broken.
@@ -41,14 +42,27 @@ public class Bag {
 
     public HashMap<Ball, Integer> ballTracker() {
         HashMap<Ball, Integer> ballTracker = new HashMap<>();
-        ballTracker.put(Ball.Green, 3);
-        ballTracker.put(Ball.Red, 2 * noOfBalls(Ball.Green));
-        ballTracker.put(Ball.Blue, 12 - (noOfBalls(Ball.Green) + noOfBalls(Ball.Red)));
+        ballTracker.put(Ball.GREEN, 3);
+        ballTracker.put(Ball.RED, 2 * noOfBalls(Ball.GREEN));
+        ballTracker.put(Ball.YELLOW, (int) (0.4 * size()));
+        ballTracker.put(Ball.BLUE, 12 - (noOfBalls(Ball.GREEN) + noOfBalls(Ball.RED)));
         return ballTracker;
     }
 
     private boolean validateColor(Ball color) {
         HashMap<Ball, Integer> rules = ballTracker();
         return noOfBalls(color) < rules.get(color) && capacity > size();
+    }
+
+    public String summary() {
+        String summary = "";
+        summary += "BAG : " + size() + " Balls";
+        Set<Ball> balls = this.balls.keySet();
+        for (Ball ball : balls) {
+            summary += "\n";
+            summary += ball + " : " + noOfBalls(ball);
+        }
+        return summary;
+
     }
 }

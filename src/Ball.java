@@ -1,3 +1,3 @@
 public enum Ball {
-    Green, Red, Blue
+    GREEN, RED, YELLOW, BLUE
 }
