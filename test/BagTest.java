@@ -95,7 +95,7 @@ public class BagTest {
 
     @Test
     public void bag_should_not_allow_balls_more_than_the_capacity_of_the_bag() throws Exception {
-        thrown.expect(NoSpaceForColorException.class);
+        thrown.expect(BagIsFullException.class);
         Bag bag = new Bag();
         bag.putBall(Ball.BLUE);
         bag.putBall(Ball.BLUE);
@@ -109,6 +109,7 @@ public class BagTest {
         bag.putBall(Ball.BLUE);
         bag.putBall(Ball.BLUE);
         bag.putBall(Ball.BLUE);
+        bag.putBall(Ball.GREEN);
         bag.putBall(Ball.GREEN);
     }
 
@@ -128,9 +129,8 @@ public class BagTest {
         bag.putBall(Ball.YELLOW);
         bag.putBall(Ball.YELLOW);
         bag.putBall(Ball.YELLOW);
-        assertEquals(12,bag.size());
+        assertEquals(12, bag.size());
     }
-
 
 
     @Test
@@ -158,16 +158,45 @@ public class BagTest {
         bag.putBall(Ball.BLUE);
         bag.putBall(Ball.BLUE);
         bag.putBall(Ball.YELLOW);
-        String expected = "BAG : 4 Balls\n"+
-                            "BLUE : 3\n"+
-                            "YELLOW : 1";
-        assertEquals(expected,bag.summary());
+        String expected = "BAG : 4 Balls\n" +
+                "YELLOW : 1\n"+
+                "BLUE : 3";
+        assertEquals(expected, bag.summary());
     }
 
     @Test
     public void summary_gives_description_of_balls_in_the_bag_when_is_empty() throws Exception {
         Bag bag = new Bag();
         String expected = "BAG : 0 Balls";
-        assertEquals(expected,bag.summary());
+        assertEquals(expected, bag.summary());
+    }
+
+    @Test
+    public void orderSummary_gives_description_of_balls_in_the_bag_according_to_the_order_they_were_placed() throws Exception {
+        Bag bag = new Bag();
+        bag.putBall(Ball.BLUE);
+        bag.putBall(Ball.BLUE);
+        bag.putBall(Ball.GREEN);
+        bag.putBall(Ball.GREEN);
+        bag.putBall(Ball.RED);
+        bag.putBall(Ball.BLUE);
+        bag.putBall(Ball.RED);
+        bag.putBall(Ball.RED);
+        String expected = "BAG : 8 Balls\n" +
+                "BLUE : 2\n" +
+                "GREEN : 2\n" +
+                "RED : 1\n" +
+                "BLUE : 1\n" +
+                "RED : 2";
+        assertEquals(expected, bag.orderedSummary());
+        assertEquals(8, bag.size());
+
+    }
+
+    @Test
+    public void ordered_summary_gives_description_of_balls_in_the_bag_when_is_empty() throws Exception {
+        Bag bag = new Bag();
+        String expected = "BAG : 0 Balls";
+        assertEquals(expected, bag.orderedSummary());
     }
 }

@@ -1,24 +1,19 @@
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.HashSet;
 
 /* Job Of Bag--
-       - throws exception where rules are broken.
+       - Throws exception where rules are broken.
+       - Give the summary of balls in bag.
 */
 
 public class Bag {
-
-    private final HashMap<Ball, Integer> balls;
+    private final ArrayList<Ball> balls;
     private int capacity;
 
     public Bag() {
         this.capacity = 12;
-        balls = new HashMap<>(capacity);
-    }
-
-    public int noOfBalls(Ball color) {
-        if (balls.containsKey(color))
-            return balls.get(color);
-        return 0;
+        balls = new ArrayList<>(capacity);
     }
 
     public int capacity() {
@@ -26,21 +21,28 @@ public class Bag {
     }
 
     public int size() {
-        int size = 0;
-        for (Ball color : balls.keySet()) {
-            size += balls.get(color);
+        return balls.size();
+    }
+
+    private int noOfBalls(Ball color) {
+        int number = 0;
+        for (Ball ball : balls) {
+            if (ball == color)
+                number++;
         }
-        return size;
+        return number;
     }
 
     public void putBall(Ball color) {
+        if (capacity <= size())
+            throw new BagIsFullException();
         if (validateColor(color))
-            balls.put(color, noOfBalls(color) + 1);
+            balls.add(color);
         else
             throw new NoSpaceForColorException(color.name());
     }
 
-    public HashMap<Ball, Integer> ballTracker() {
+    private HashMap<Ball, Integer> ballTracker() {
         HashMap<Ball, Integer> ballTracker = new HashMap<>();
         ballTracker.put(Ball.GREEN, 3);
         ballTracker.put(Ball.RED, 2 * noOfBalls(Ball.GREEN));
@@ -51,18 +53,38 @@ public class Bag {
 
     private boolean validateColor(Ball color) {
         HashMap<Ball, Integer> rules = ballTracker();
-        return noOfBalls(color) < rules.get(color) && capacity > size();
+        return noOfBalls(color) < rules.get(color);
     }
 
     public String summary() {
         String summary = "";
         summary += "BAG : " + size() + " Balls";
-        Set<Ball> balls = this.balls.keySet();
-        for (Ball ball : balls) {
+        HashSet<Ball> ballsSet = new HashSet<>(this.balls);
+        for (Ball ball : ballsSet) {
             summary += "\n";
             summary += ball + " : " + noOfBalls(ball);
         }
         return summary;
+    }
 
+    public String orderedSummary() {
+        ArrayList<Ball> duplicateBalls = (ArrayList<Ball>) balls.clone();
+        duplicateBalls.add(Ball.NOCOLOR);
+        String summary = "";
+        summary += "BAG : " + size() + " Balls";
+        int count = 0;
+        Ball runningColor = duplicateBalls.get(0);
+        for (Ball duplicateBall : duplicateBalls) {
+            if (runningColor == duplicateBall)
+                count++;
+            else {
+                summary += "\n";
+                summary += runningColor + " : " + count;
+                count = 0;
+                count++;
+                runningColor = duplicateBall;
+            }
+        }
+        return summary;
     }
 }
